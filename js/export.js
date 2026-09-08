@@ -13,38 +13,45 @@ const Export = (() => {
     const canvas = getCanvas();
     if (!canvas) return;
 
-    const fw = getConfig() ? getConfig().canvasWidth : 928;
-    const fh = getConfig() ? getConfig().canvasHeight : 1152;
+    const cfg = getConfig();
+    const fw = cfg ? cfg.canvasWidth : 928;
+    const fh = cfg ? cfg.canvasHeight : 1152;
 
     const temp = new fabric.StaticCanvas(document.createElement('canvas'));
     temp.setDimensions({ width: fw, height: fh });
     temp.backgroundColor = '#ffffff';
 
-    const nativeWidth = canvas.getWidth() / canvas.getZoom();
-    const nativeHeight = canvas.getHeight() / canvas.getZoom();
+    // Logical width of the on-screen canvas, independent of zoom + HiDPI/retina.
+    const nativeWidth = canvas.width / canvas.getZoom();
     const scale = fw / nativeWidth;
 
-    canvas.forEachObject(obj => {
-      obj.clone(c => {
-        c.set({
+    // fabric.Image.clone() is asynchronous (image reload), so collect every
+    // clone and wait for them all before rendering — otherwise the frame is
+    // missing from the exported image.
+    const tasks = canvas.getObjects().map(obj => new Promise(resolve => {
+      obj.clone(clone => {
+        clone.set({
           left: obj.left * scale,
           top: obj.top * scale,
           scaleX: obj.scaleX * scale,
           scaleY: obj.scaleY * scale
         });
-        temp.add(c);
+        temp.add(clone);
+        resolve();
       });
+    }));
+
+    Promise.all(tasks).then(() => {
+      const url = format === 'png'
+        ? temp.toDataURL({ format: 'png', multiplier: 1 })
+        : temp.toDataURL({ format: 'jpeg', quality: 0.95 });
+
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = filename || 'frame-studio-' + Date.now() + '.' + format;
+      a.click();
+      temp.dispose();
     });
-
-    const url = format === 'png'
-      ? temp.toDataURL({ format: 'png', multiplier: 1 })
-      : temp.toDataURL({ format: 'jpeg', quality: 0.95 });
-
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = filename || 'frame-studio-' + Date.now() + '.' + format;
-    a.click();
-    temp.dispose();
   }
 
   function init() {
