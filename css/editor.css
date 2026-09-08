@@ -142,7 +142,8 @@
 .sidebar__head h2 svg { color: var(--gold-deep); }
 
 .sidebar__body {
-  flex: 1; overflow-y: auto;
+  flex: 1; overflow: auto;
+  min-height: 0; /* allow the flex child to shrink & scroll instead of overflowing */
   padding: var(--sp-xl);
   scroll-behavior: smooth;
   -webkit-overflow-scrolling: touch;
@@ -490,19 +491,20 @@
 
 /* === Canvas Area â€” velvet stage === */
 .canvas-area {
-  display: flex; align-items: center; justify-content: center;
+  display: flex;
   position: relative;
   background:
     radial-gradient(120% 90% at 20% 15%, #16294a 0%, var(--velvet) 52%, var(--velvet-deep) 100%);
   background-image:
     radial-gradient(circle at 1px 1px, rgba(233,201,127,0.015) 1px, transparent 0);
   background-size: 32px 32px;
-  overflow: hidden;
+  overflow: auto; /* let canvas scroll if it exceeds the work area on small screens */
   padding-bottom: 90px; /* space for floating zoom controls */
 }
 
 /* Empty state */
 .canvas-empty {
+  margin: auto; /* center within the scrollable work area */
   text-align: center; color: rgba(233,201,127,0.22);
 }
 
@@ -528,6 +530,7 @@
 .canvas-wrap {
   position: relative;
   display: flex; align-items: center; justify-content: center;
+  margin: auto; /* centers when it fits, stays scrollable when it overflows */
   max-width: 100%; max-height: 100%;
 }
 
