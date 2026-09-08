@@ -10,6 +10,7 @@
     radial-gradient(120% 90% at 80% 10%, #14294a 0%, var(--velvet) 48%, var(--velvet-deep) 100%);
   overflow: hidden;
   height: 100vh;
+  height: 100dvh; /* iOS/Android URL-bar safe */
 }
 
 .editor-body .header {
@@ -96,6 +97,7 @@
 .editor-main:has(.editor-layout) {
   padding-top: calc(var(--header-h) + 50px);
   height: 100vh;
+  height: 100dvh; /* iOS/Android URL-bar safe */
 }
 
 .editor-layout {

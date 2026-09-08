@@ -230,7 +230,9 @@ ul, ol { list-style: none; }
    HERO — Royal Atelier Stage
    ============================================= */
 .hero {
-  min-height: 100vh; position: relative;
+  min-height: 100vh;
+  min-height: 100dvh; /* iOS/Android URL-bar safe */
+  position: relative;
   display: flex; align-items: center;
   padding-top: var(--header-h); overflow: hidden;
   background: radial-gradient(120% 90% at 78% 18%, #16294a 0%, var(--velvet) 45%, var(--velvet-deep) 100%);
@@ -263,6 +265,7 @@ ul, ol { list-style: none; }
   gap: var(--sp-3xl); align-items: center;
   position: relative; z-index: 2;
   min-height: calc(100vh - var(--header-h));
+  min-height: calc(100dvh - var(--header-h));
 }
 
 /* Right content (text side) */
@@ -1076,3 +1079,26 @@ ul, ol { list-style: none; }
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: rgba(201,163,92,0.4); border-radius: 4px; }
 ::-webkit-scrollbar-thumb:hover { background: var(--gold); }
+
+/* Empty / Error states */
+.empty-state,
+.error-state {
+  text-align: center;
+  padding: 40px;
+  color: var(--text-muted);
+}
+
+.empty-state h3,
+.error-state h3 {
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: var(--ink);
+  margin-bottom: 8px;
+}
+
+.empty-state p,
+.error-state p {
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  margin-bottom: 16px;
+}
