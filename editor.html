@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Frame Studio - محرر التصاميم">
+  <title>محرر التصاميم | Frame Studio</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/editor.css">
+  <link rel="stylesheet" href="css/responsive.css">
+</head>
+<body class="editor-body">
+  <!-- Header -->
+  <header class="header" id="header">
+    <div class="container header__inner">
+      <a href="index.html" class="logo" aria-label="Frame Studio">
+        <div class="logo__mark">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+            <rect x="3" y="3" width="18" height="18" rx="4" stroke="white" stroke-width="1.8"/>
+            <circle cx="12" cy="12" r="3" fill="white"/>
+          </svg>
+        </div>
+        Frame Studio
+      </a>
+      <div>
+        <a href="index.html" class="btn btn--ghost btn--sm">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M10 3L5 8l5 5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          الرئيسية
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Step Indicator -->
+  <div class="step-bar-wrap">
+    <div class="container">
+      <div class="step-bar">
+        <button class="step-pill active" data-step="1">
+          <span class="step-pill__n">01</span>
+          <span class="step-pill__t">الصورة</span>
+        </button>
+        <div class="step-connector"></div>
+        <button class="step-pill" data-step="2">
+          <span class="step-pill__n">02</span>
+          <span class="step-pill__t">الفريم</span>
+        </button>
+        <div class="step-connector"></div>
+        <button class="step-pill" data-step="3">
+          <span class="step-pill__n">03</span>
+          <span class="step-pill__t">البيانات</span>
+        </button>
+        <div class="step-connector"></div>
+        <button class="step-pill" data-step="4">
+          <span class="step-pill__n">04</span>
+          <span class="step-pill__t">التحميل</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main -->
+  <main class="editor-main">
+    <div class="editor-layout">
+      <!-- Sidebar -->
+      <aside class="sidebar" id="sidebar">
+        <!-- Panel 1: Upload -->
+        <div class="sidebar__panel active" data-panel="1">
+          <div class="sidebar__head">
+            <h2>
+              <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><rect x="2" y="2" width="14" height="14" rx="3" stroke="currentColor" stroke-width="1.5"/><circle cx="6.5" cy="6.5" r="2" stroke="currentColor" stroke-width="1.2"/><path d="M2 13l3.5-4.5 3 3.5 2-2 5.5 4.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
+              رفع الصورة
+            </h2>
+          </div>
+          <div class="sidebar__body">
+            <div class="upload-zone" id="uploadZone" role="button" tabindex="0" aria-label="منطقة رفع الصورة">
+              <div class="upload-zone__icon">
+                <svg width="32" height="32" viewBox="0 0 32 32" fill="none"><path d="M16 22V10M11 15l5-5 5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M5 22v4a2 2 0 002 2h18a2 2 0 002-2v-4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+              </div>
+              <p class="upload-zone__text">اسحب الصورة هنا أو <span>اختر ملف</span></p>
+              <p class="upload-zone__hint">JPG, PNG, WEBP — حتى 10MB</p>
+              <input type="file" id="fileInput" accept="image/jpeg,image/png,image/webp" class="sr-only">
+            </div>
+            <div class="upload-preview" id="uploadPreview" style="display:none;">
+              <img id="previewImg" alt="معاينة">
+              <button class="btn btn--danger btn--sm" id="removeImage">
+                <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3 3l8 8M11 3l-8 8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+                إزالة
+              </button>
+            </div>
+            <div class="privacy-badge">
+              <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 1a3.5 3.5 0 00-3.5 3.5v2.5a1 1 0 00-1 1v4a1 1 0 001 1h7a1 1 0 001-1v-4a1 1 0 00-1-1V4.5A3.5 3.5 0 007 1z" stroke="currentColor" stroke-width="1.2"/><circle cx="7" cy="9.5" r="1" fill="currentColor"/></svg>
+              صورتك تبقى على جهازك — لا تُرفع لأي خادم
+            </div>
+          </div>
+        </div>
+
+        <!-- Panel 2: Frames -->
+        <div class="sidebar__panel" data-panel="2">
+          <div class="sidebar__head">
+            <h2>
+              <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><rect x="2" y="2" width="14" height="14" rx="3" stroke="currentColor" stroke-width="1.5"/><rect x="1" y="1" width="16" height="16" rx="4" stroke="currentColor" stroke-width="1" stroke-dasharray="3 2"/></svg>
+              اختر الفريم
+            </h2>
+          </div>
+          <div class="sidebar__body">
+            <div class="frames-grid" id="framesGrid"></div>
+          </div>
+        </div>
+
+        <!-- Panel 3: Data -->
+        <div class="sidebar__panel" data-panel="3">
+          <div class="sidebar__head">
+            <h2>
+              <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M4 5h10M4 9h7M4 13h9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+              البيانات
+            </h2>
+          </div>
+          <div class="sidebar__body">
+            <form class="text-form" id="textForm">
+              <div class="form-group">
+                <label class="form-label" for="inputName">الاسم</label>
+                <input class="form-input" type="text" id="inputName" placeholder="أدخل الاسم" maxlength="40">
+              </div>
+              <div class="form-group" data-text-field="title">
+                <label class="form-label" for="inputTitle">المسمى الوظيفي</label>
+                <input class="form-input" type="text" id="inputTitle" placeholder="أدخل المسمى" maxlength="50">
+              </div>
+              <div class="form-group" data-text-field="details">
+                <label class="form-label" for="inputDetails">كلمة الشكر</label>
+                <textarea class="form-input form-textarea" id="inputDetails" placeholder="أدخل كلمة الشكر" rows="3" maxlength="200"></textarea>
+              </div>
+              <div class="form-divider"></div>
+              <div class="form-section-title">حجم الخط</div>
+              <div class="form-group">
+                <label class="form-label">اسم</label>
+                <div class="range-row">
+                  <input type="range" class="form-range" id="nameFontSize" min="14" max="80" value="42">
+                  <span class="range-val" id="nameFontSizeVal">42px</span>
+                </div>
+              </div>
+              <div class="form-group" data-text-field="title">
+                <label class="form-label">مسمى</label>
+                <div class="range-row">
+                  <input type="range" class="form-range" id="titleFontSize" min="12" max="60" value="28">
+                  <span class="range-val" id="titleFontSizeVal">28px</span>
+                </div>
+              </div>
+              <div class="form-group" data-text-field="details">
+                <label class="form-label">شكر</label>
+                <div class="range-row">
+                  <input type="range" class="form-range" id="detailsFontSize" min="12" max="50" value="24">
+                  <span class="range-val" id="detailsFontSizeVal">24px</span>
+                </div>
+              </div>
+              <div class="form-divider"></div>
+              <div class="form-section-title">لون النص</div>
+              <div class="form-group">
+                <div class="color-row" id="textColorOptions">
+                  <div class="color-dot active" data-color="#1a1a2e" style="background:#1a1a2e"></div>
+                  <div class="color-dot" data-color="#014976" style="background:#014976"></div>
+                  <div class="color-dot" data-color="#FFFFFF" style="background:#FFFFFF; border: 2px solid #ccc;"></div>
+                  <div class="color-dot" data-color="#FBAE42" style="background:#FBAE42"></div>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+
+        <!-- Panel 4: Export -->
+        <div class="sidebar__panel" data-panel="4">
+          <div class="sidebar__head">
+            <h2>
+              <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M9 2v10M5 8l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M2 12v3a1 1 0 001 1h12a1 1 0 001-1v-3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+              التحميل
+            </h2>
+          </div>
+          <div class="sidebar__body">
+            <div class="export-stack">
+              <button class="btn btn--primary btn--full" id="btnExportPNG">
+                <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M9 2v10M5 8l4 4 4-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M2 12v3a1 1 0 001 1h12a1 1 0 001-1v-3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+                تحميل PNG
+              </button>
+              <button class="btn btn--amber btn--full" id="btnExportJPG">
+                <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M9 2v10M5 8l4 4 4-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M2 12v3a1 1 0 001 1h12a1 1 0 001-1v-3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+                تحميل JPG
+              </button>
+              <button class="btn btn--dark btn--full" id="btnShare">
+                <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><circle cx="13.5" cy="3.5" r="2" stroke="currentColor" stroke-width="1.3"/><circle cx="4.5" cy="9" r="2" stroke="currentColor" stroke-width="1.3"/><circle cx="13.5" cy="14.5" r="2" stroke="currentColor" stroke-width="1.3"/><path d="M6.3 7.8l5-3.2M6.3 10.2l5 3.2" stroke="currentColor" stroke-width="1.3"/></svg>
+                مشاركة
+              </button>
+            </div>
+            <div class="export-info">
+              <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="5.5" stroke="currentColor" stroke-width="1.2"/><path d="M7 4.5v3M7 9v.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+              الصورة النهائية ستكون بجودة عالية وخالية من عناصر واجهة الموقع
+            </div>
+          </div>
+        </div>
+
+        <!-- Nav -->
+        <div class="sidebar__nav">
+          <button class="btn btn--ghost btn--sm" id="btnPrev" style="display:none;">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M10 3L5 8l5 5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            السابق
+          </button>
+          <button class="btn btn--primary btn--sm" id="btnNext">
+            التالي
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M6 3l5 5-5 5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+        </div>
+      </aside>
+
+      <!-- Canvas -->
+      <div class="canvas-area" id="canvasArea">
+        <div class="canvas-empty" id="canvasEmpty">
+          <div class="canvas-empty__icon">
+            <svg width="40" height="40" viewBox="0 0 40 40" fill="none"><rect x="5" y="5" width="30" height="30" rx="8" stroke="currentColor" stroke-width="1.5" stroke-dasharray="5 3"/><circle cx="15" cy="15" r="4" stroke="currentColor" stroke-width="1.5"/><path d="M5 28l8-10 6 7 4-4 12 10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+          </div>
+          <h3>ارفع صورتك للبدء</h3>
+          <p>ارفع صورتك الشخصية من خطوة الصورة</p>
+        </div>
+        <div class="canvas-wrap" id="canvasContainer" style="display:none;">
+          <canvas id="editorCanvas"></canvas>
+        </div>
+        <div class="canvas-controls" id="canvasControls" style="display:none;">
+          <span class="ctrl-label">تكبير</span>
+          <div class="zoom-row">
+            <button class="ctrl-btn" id="zoomOut" aria-label="تصغير">
+              <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3 7h8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+            </button>
+            <input type="range" id="zoomSlider" min="10" max="300" value="100" class="form-range">
+            <button class="ctrl-btn" id="zoomIn" aria-label="تكبير">
+              <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 3v8M3 7h8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+            </button>
+            <span class="zoom-val" id="zoomValue">100%</span>
+          </div>
+          <button class="ctrl-btn ctrl-btn--text" id="resetImage" aria-label="إعادة ضبط">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M1.5 7a5.5 5.5 0 1010.5-2" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/><path d="M12 1.5v3.5h-3.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            إعادة ضبط
+          </button>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Mobile Nav -->
+  <div class="mobile-nav" id="mobileNav">
+    <button class="mobile-nav__btn" id="mobilePrev" style="display:none;">
+      <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M11 4L6 9l5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      السابق
+    </button>
+    <button class="mobile-nav__btn mobile-nav__btn--primary" id="mobileNext">
+      التالي
+      <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M7 4l5 5-5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </button>
+  </div>
+
+  <div class="toast-wrap" id="toastContainer" aria-live="polite"></div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/5.3.1/fabric.min.js"></script>
+  <script src="js/app.js"></script>
+  <script src="js/frames.js"></script>
+  <script src="js/editor.js"></script>
+  <script src="js/export.js"></script>
+</body>
+</html>
