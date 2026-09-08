@@ -25,13 +25,14 @@ const Export = (() => {
     const nativeWidth = canvas.width / canvas.getZoom();
     const scale = fw / nativeWidth;
 
-    // Build the export objects in the same bottom-to-top order as the live
-    // canvas. fabric.Image.clone() is async (image reload), but text is rebuilt
-    // synchronously from the live Text object so the typed text is guaranteed
-    // to be stamped onto the exported image.
-    const tasks = canvas.getObjects().map(obj => new Promise(resolve => {
+    // Produce every export object IN ORDER (bottom-to-top, same as the live
+    // canvas): user image → frame → text. Images are cloned async; text is
+    // rebuilt synchronously (so the typed text is guaranteed). Only AFTER all
+    // are ready do we add them to temp — otherwise the order would get scrambled
+    // (async images could land on top of the text and hide it).
+    const producers = canvas.getObjects().map(obj => {
       if (obj.type === 'text' || obj.type === 'i-text' || obj.type === 'textbox') {
-        temp.add(new fabric.Text(obj.text, {
+        return Promise.resolve(new fabric.Text(obj.text, {
           left: obj.left * scale,
           top: obj.top * scale,
           fontSize: +obj.fontSize,
@@ -42,22 +43,22 @@ const Export = (() => {
           originX: obj.originX || 'center',
           originY: obj.originY || 'center'
         }));
-        resolve();
-        return;
       }
-      obj.clone(clone => {
-        clone.set({
-          left: obj.left * scale,
-          top: obj.top * scale,
-          scaleX: obj.scaleX * scale,
-          scaleY: obj.scaleY * scale
+      return new Promise(resolve => {
+        obj.clone(clone => {
+          clone.set({
+            left: obj.left * scale,
+            top: obj.top * scale,
+            scaleX: obj.scaleX * scale,
+            scaleY: obj.scaleY * scale
+          });
+          resolve(clone);
         });
-        temp.add(clone);
-        resolve();
       });
-    }));
+    });
 
-    Promise.all(tasks).then(() => {
+    Promise.all(producers).then(items => {
+      items.forEach(item => temp.add(item));
       const url = format === 'png'
         ? temp.toDataURL({ format: 'png', multiplier: 1 })
         : temp.toDataURL({ format: 'jpeg', quality: 0.95 });
