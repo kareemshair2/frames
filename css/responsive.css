@@ -120,52 +120,49 @@
   .about-page { padding-top: calc(var(--header-h) + var(--sp-2xl)); }
   .about-grid { grid-template-columns: 1fr; }
 
-  /* Editor — maximise canvas, compact sidebar */
-  .editor-main { padding-top: var(--header-h); } /* step-bar hidden; reclaim the 50 px */
+  /* Editor — natural page scroll; canvas premieres, form follows */
+  .editor-main { padding-top: var(--header-h); padding-bottom: 74px; } /* reclaim step-bar; clear fixed mobile-nav */
 
   .editor-body {
-    height: 100vh;
-    height: 100dvh; /* iOS/Android URL-bar safe */
+    min-height: 100vh;
+    min-height: 100dvh; /* iOS/Android URL-bar safe */
   }
 
   .editor-layout {
-    grid-template-columns: 1fr;
-    grid-template-rows: 1fr auto; /* canvas gets all remaining space */
+    display: flex;
+    flex-direction: column;
+    grid-template-columns: none; /* override the desktop 2-col grid */
+    min-height: calc(100dvh - var(--header-h));
   }
 
   .sidebar {
     order: 2; border-left: none;
     border-top: 1px solid rgba(201,163,92,0.35);
-    max-height: 34vh; /* compact but scrollable — keeps canvas visible */
+    flex: 0 0 auto;
+    min-height: 0;
   }
   .sidebar__head { padding: 8px 14px; }
   .sidebar__head h2 { font-size: 0.9rem; }
-  .sidebar__body { padding: 10px 14px;
-    /* fade the bottom edge so the user sees there's more to scroll */
-    mask-image: linear-gradient(to bottom, black 70%, transparent 100%);
-    -webkit-mask-image: linear-gradient(to bottom, black 70%, transparent 100%);
-  }
+  .sidebar__body { padding: 10px 14px; }
   .upload-zone__icon { width: 56px; height: 56px; }
   .upload-zone { padding: var(--sp-lg) var(--sp-md); }
   .form-input { padding: 10px 14px; font-size: 0.88rem; }
   .form-range { height: 3px; }
 
-  .canvas-area { order: 1; padding-bottom: 88px; } /* floating controls zone */
+  .canvas-area { order: 1; flex: 1 1 auto; min-height: 56vh; padding-bottom: 88px; }
 
   .step-bar-wrap { display: none; }
   .mobile-nav { display: flex; }
   .sidebar__nav { display: none; }
 
-  .canvas-controls { bottom: 14px; padding: 10px 16px; gap: 8px; }
+  .canvas-controls { bottom: 14px; padding: 10px 16px; gap: 8px; flex-wrap: wrap; justify-content: center; width: auto; }
   .canvas-controls .form-range { width: 90px; }
   .ctrl-label { display: none; }
-
-  /* Floating zoom controls shouldn't overlap the photo too much on small canvases */
-  .canvas-controls { flex-wrap: wrap; justify-content: center; width: auto; }
 }
 
 /* Mobile Small */
 @media (max-width: 480px) {
+  /* 480px and below */
   .container { padding: 0 var(--sp-md); }
 
   .hero__title { font-size: 1.8rem; }
@@ -177,7 +174,6 @@
   .feature-card { padding: var(--sp-lg); }
   .about-card { padding: var(--sp-lg); }
 
-  .sidebar { max-height: 32vh; }
   .sidebar__head { padding: 6px 12px; }
   .sidebar__body { padding: 8px 12px; }
   .frames-grid { gap: 6px; }
@@ -190,10 +186,10 @@
   }
 }
 
-/* Short screens — desktop/tablet only (mobile uses the 1fr auto layout above) */
+/* Short screens — desktop/tablet only (mobile uses the natural stacked flow above) */
 @media (max-height: 700px) and (min-width: 769px) {
   .editor-main { padding-top: calc(var(--header-h) + 42px); }
-  .editor-layout { grid-template-rows: 42vh 1fr; }
+  .canvas-area { min-height: 70vh; } /* keep the preview usable on short desktop screens */
 }
 
 @media print {
