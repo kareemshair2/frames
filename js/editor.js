@@ -315,8 +315,12 @@ const Editor = (() => {
 
     el.textColorOptions.querySelectorAll('.color-dot').forEach(btn => {
       btn.addEventListener('click', () => {
-        el.textColorOptions.querySelectorAll('.color-dot').forEach(b => b.classList.remove('active'));
+        el.textColorOptions.querySelectorAll('.color-dot').forEach(b => {
+          b.classList.remove('active');
+          b.setAttribute('aria-pressed', 'false');
+        });
         btn.classList.add('active');
+        btn.setAttribute('aria-pressed', 'true');
         Object.values(textObjects).forEach(t => { if (t) t.set('fill', btn.dataset.color); });
         canvas.renderAll();
       });

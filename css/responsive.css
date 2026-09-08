@@ -43,6 +43,15 @@
 @media (max-width: 768px) {
   :root { --header-h: 64px; }
 
+  /* Touch: remove double-tap zoom delay, allow instant taps */
+  button, .frame-card, .upload-zone, input, textarea {
+    touch-action: manipulation;
+  }
+
+  /* Frame cards: larger tap targets */
+  .frame-card__label,
+  .frame-card__name { padding: 10px 6px; font-size: 0.72rem; }
+
   /* Nav */
   .nav {
     position: fixed; top: var(--header-h);
@@ -114,6 +123,11 @@
   /* Editor — maximise canvas, compact sidebar */
   .editor-main { padding-top: var(--header-h); } /* step-bar hidden; reclaim the 50 px */
 
+  .editor-body {
+    height: 100vh;
+    height: 100dvh; /* iOS/Android URL-bar safe */
+  }
+
   .editor-layout {
     grid-template-columns: 1fr;
     grid-template-rows: 1fr auto; /* canvas gets all remaining space */
@@ -122,7 +136,7 @@
   .sidebar {
     order: 2; border-left: none;
     border-top: 1px solid rgba(201,163,92,0.35);
-    max-height: 180px; /* compact but scrollable */
+    max-height: 34vh; /* compact but scrollable — keeps canvas visible */
   }
   .sidebar__head { padding: 8px 14px; }
   .sidebar__head h2 { font-size: 0.9rem; }
@@ -136,15 +150,18 @@
   .form-input { padding: 10px 14px; font-size: 0.88rem; }
   .form-range { height: 3px; }
 
-  .canvas-area { order: 1; padding-bottom: 78px; } /* floating controls zone */
+  .canvas-area { order: 1; padding-bottom: 88px; } /* floating controls zone */
 
   .step-bar-wrap { display: none; }
   .mobile-nav { display: flex; }
   .sidebar__nav { display: none; }
 
-  .canvas-controls { bottom: 12px; padding: 10px 16px; gap: 8px; }
+  .canvas-controls { bottom: 14px; padding: 10px 16px; gap: 8px; }
   .canvas-controls .form-range { width: 90px; }
   .ctrl-label { display: none; }
+
+  /* Floating zoom controls shouldn't overlap the photo too much on small canvases */
+  .canvas-controls { flex-wrap: wrap; justify-content: center; width: auto; }
 }
 
 /* Mobile Small */
@@ -160,12 +177,17 @@
   .feature-card { padding: var(--sp-lg); }
   .about-card { padding: var(--sp-lg); }
 
-  .sidebar { max-height: 160px; }
+  .sidebar { max-height: 32vh; }
   .sidebar__head { padding: 6px 12px; }
   .sidebar__body { padding: 8px 12px; }
   .frames-grid { gap: 6px; }
   .upload-zone { padding: var(--sp-xl) var(--sp-md); }
   .canvas-controls { flex-wrap: wrap; justify-content: center; }
+
+  /* iPhone home-indicator safe area */
+  .mobile-nav {
+    padding-bottom: calc(10px + env(safe-area-inset-bottom));
+  }
 }
 
 /* Short screens — desktop/tablet only (mobile uses the 1fr auto layout above) */

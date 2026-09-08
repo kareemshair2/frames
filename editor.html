@@ -132,34 +132,35 @@
               <div class="form-divider"></div>
               <div class="form-section-title">حجم الخط</div>
               <div class="form-group">
-                <label class="form-label">اسم</label>
+                <label class="form-label" for="nameFontSize">اسم</label>
                 <div class="range-row">
-                  <input type="range" class="form-range" id="nameFontSize" min="14" max="80" value="42">
+                  <input type="range" class="form-range" id="nameFontSize" min="14" max="80" value="42" aria-label="حجم خط الاسم">
                   <span class="range-val" id="nameFontSizeVal">42px</span>
                 </div>
               </div>
               <div class="form-group" data-text-field="title">
-                <label class="form-label">مسمى</label>
+                <label class="form-label" for="titleFontSize">مسمى</label>
                 <div class="range-row">
-                  <input type="range" class="form-range" id="titleFontSize" min="12" max="60" value="28">
+                  <input type="range" class="form-range" id="titleFontSize" min="12" max="60" value="28" aria-label="حجم خط المسمى">
                   <span class="range-val" id="titleFontSizeVal">28px</span>
                 </div>
               </div>
               <div class="form-group" data-text-field="details">
-                <label class="form-label">شكر</label>
+                <label class="form-label" for="detailsFontSize">شكر</label>
                 <div class="range-row">
-                  <input type="range" class="form-range" id="detailsFontSize" min="12" max="50" value="24">
+                  <input type="range" class="form-range" id="detailsFontSize" min="12" max="50" value="24" aria-label="حجم خط كلمة الشكر">
                   <span class="range-val" id="detailsFontSizeVal">24px</span>
                 </div>
               </div>
               <div class="form-divider"></div>
               <div class="form-section-title">لون النص</div>
               <div class="form-group">
-                <div class="color-row" id="textColorOptions">
-                  <div class="color-dot active" data-color="#1a1a2e" style="background:#1a1a2e"></div>
-                  <div class="color-dot" data-color="#014976" style="background:#014976"></div>
-                  <div class="color-dot" data-color="#FFFFFF" style="background:#FFFFFF; border: 2px solid #ccc;"></div>
-                  <div class="color-dot" data-color="#FBAE42" style="background:#FBAE42"></div>
+                <span class="form-label" id="colorLabel">لون النص</span>
+                <div class="color-row" id="textColorOptions" role="group" aria-labelledby="colorLabel">
+                  <button type="button" class="color-dot active" data-color="#1a1a2e" style="background:#1a1a2e" aria-label="لون النص: أسود داكن" aria-pressed="true"></button>
+                  <button type="button" class="color-dot" data-color="#014976" style="background:#014976" aria-label="لون النص: أزرق" aria-pressed="false"></button>
+                  <button type="button" class="color-dot" data-color="#FFFFFF" style="background:#FFFFFF; border: 2px solid #ccc;" aria-label="لون النص: أبيض" aria-pressed="false"></button>
+                  <button type="button" class="color-dot" data-color="#FBAE42" style="background:#FBAE42" aria-label="لون النص: برتقالي" aria-pressed="false"></button>
                 </div>
               </div>
             </form>
@@ -227,7 +228,7 @@
             <button class="ctrl-btn" id="zoomOut" aria-label="تصغير">
               <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3 7h8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
             </button>
-            <input type="range" id="zoomSlider" min="10" max="300" value="100" class="form-range">
+            <input type="range" id="zoomSlider" min="10" max="300" value="100" class="form-range" aria-label="مستوى التكبير">
             <button class="ctrl-btn" id="zoomIn" aria-label="تكبير">
               <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 3v8M3 7h8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
             </button>

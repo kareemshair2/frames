@@ -93,7 +93,7 @@
 }
 
 /* === Editor Layout === */
-.editor-main {
+.editor-main:has(.editor-layout) {
   padding-top: calc(var(--header-h) + 50px);
   height: 100vh;
 }
@@ -253,12 +253,19 @@
   box-shadow: var(--shadow-elevated);
 }
 
-.frame-card.active {
+.frame-card.selected {
   border-color: var(--gold);
   box-shadow: 0 0 0 3px rgba(201,163,92,0.2), var(--shadow-card);
 }
 
-.frame-card__img {
+.frame-card.active,
+.frame-card.selected {
+  border-color: var(--gold);
+  box-shadow: 0 0 0 3px rgba(201,163,92,0.2), var(--shadow-card);
+}
+
+.frame-card__img,
+.frame-card__image {
   width: 100%; aspect-ratio: 1;
   object-fit: contain;
   background:
@@ -266,7 +273,19 @@
     50% / 14px 14px;
 }
 
-.frame-card__label {
+.frame-card__image {
+  border-radius: inherit;
+  overflow: hidden;
+}
+
+.frame-card__image img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.frame-card__label,
+.frame-card__name {
   padding: 8px; text-align: center;
   font-family: var(--font-display); font-size: 0.8rem;
   font-weight: 700; color: var(--text-body);
@@ -275,16 +294,52 @@
 
 .frame-card.active .frame-card__label { color: var(--gold-deep); }
 
-.frame-card__tick {
-  position: absolute; top: 8px; left: 8px;
-  width: 22px; height: 22px;
-  background: linear-gradient(160deg, var(--gold-bright), var(--gold-deep));
-  color: #211303;
-  border-radius: 50%; display: none;
-  align-items: center; justify-content: center;
+/* Index page frame card content (rendered by app.js) */
+.frame-card__content {
+  padding: 16px;
 }
 
-.frame-card.active .frame-card__tick { display: flex; }
+.frame-card__title {
+  font-family: var(--font-display);
+  font-size: 1rem;
+  font-weight: 800;
+  color: var(--ink);
+  margin: 0 0 6px 0;
+}
+
+.frame-card__desc {
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  margin: 0 0 10px 0;
+  line-height: 1.5;
+}
+
+.frame-card__meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  margin-bottom: 12px;
+}
+
+/* Empty / Error states in frames grid */
+.frames-grid .empty-state,
+.frames-grid .error-state {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: var(--sp-xl);
+  color: var(--text-muted);
+  background: var(--parchment-2);
+  border-radius: var(--r-md);
+  border: 1px dashed rgba(201,163,92,0.2);
+}
+
+.frames-grid .empty-state p,
+.frames-grid .error-state p {
+  font-size: 0.9rem;
+  margin-bottom: var(--sp-sm);
+}
 
 /* === Text Form === */
 .text-form { display: flex; flex-direction: column; gap: var(--sp-md); }
@@ -480,6 +535,7 @@
   border-radius: var(--r-md);
   box-shadow: var(--shadow-dramatic), 0 0 0 1px rgba(201,163,92,0.15);
   max-width: 100%;
+  touch-action: none;
   /* No max-height here: fitCanvas() sizes it precisely to the content box
      (which already reserves space for the floating controls). */
 }
