@@ -25,10 +25,26 @@ const Export = (() => {
     const nativeWidth = canvas.width / canvas.getZoom();
     const scale = fw / nativeWidth;
 
-    // fabric.Image.clone() is asynchronous (image reload), so collect every
-    // clone and wait for them all before rendering — otherwise the frame is
-    // missing from the exported image.
+    // Build the export objects in the same bottom-to-top order as the live
+    // canvas. fabric.Image.clone() is async (image reload), but text is rebuilt
+    // synchronously from the live Text object so the typed text is guaranteed
+    // to be stamped onto the exported image.
     const tasks = canvas.getObjects().map(obj => new Promise(resolve => {
+      if (obj.type === 'text' || obj.type === 'i-text' || obj.type === 'textbox') {
+        temp.add(new fabric.Text(obj.text, {
+          left: obj.left * scale,
+          top: obj.top * scale,
+          fontSize: +obj.fontSize,
+          fontFamily: obj.fontFamily,
+          fontWeight: obj.fontWeight || 'normal',
+          fill: obj.fill,
+          textAlign: obj.textAlign || 'center',
+          originX: obj.originX || 'center',
+          originY: obj.originY || 'center'
+        }));
+        resolve();
+        return;
+      }
       obj.clone(clone => {
         clone.set({
           left: obj.left * scale,
