@@ -32,7 +32,14 @@ const Export = (() => {
     // (async images could land on top of the text and hide it).
     const producers = canvas.getObjects().map(obj => {
       if (obj.type === 'text' || obj.type === 'i-text' || obj.type === 'textbox') {
-        return Promise.resolve(new fabric.Text(obj.text, {
+        // Read the string from the live input field (source of truth for what
+        // the user typed), falling back to the object's own text.
+        let typed = obj.text || '';
+        if (obj.id && !typed) {
+          const inp = document.getElementById('input' + obj.id.charAt(0).toUpperCase() + obj.id.slice(1));
+          if (inp && inp.value) typed = inp.value;
+        }
+        return Promise.resolve(new fabric.Text(typed, {
           left: obj.left * scale,
           top: obj.top * scale,
           fontSize: +obj.fontSize,

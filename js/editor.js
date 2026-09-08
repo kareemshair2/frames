@@ -250,6 +250,7 @@ const Editor = (() => {
       const val = (inp && inp.value) ? inp.value : '';
 
       const t = new fabric.Text(val, {
+        id: key,
         left: cfg.x,
         top: cfg.y,
         fontSize: cfg.fontSize || d.size,
