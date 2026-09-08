@@ -1,30 +1,5 @@
 [
   {
-    "id": "frame1",
-    "name": "فريم شكر المحافظات",
-    "image": "assets/frames/frame1.png",
-    "canvasWidth": 928,
-    "canvasHeight": 1152,
-    "photoArea": { "x": 273, "y": 290, "width": 385, "height": 573 },
-    "text": {
-      "name": {
-        "x": 695, "y": 920,
-        "fontSize": 42, "fontWeight": "bold",
-        "color": "#014976", "align": "center", "letterSpacing": 0
-      },
-      "title": {
-        "x": 239, "y": 904,
-        "fontSize": 28, "fontWeight": "normal",
-        "color": "#012d4f", "align": "center", "letterSpacing": 0
-      },
-      "details": {
-        "x": 492, "y": 126,
-        "fontSize": 24, "fontWeight": "bold",
-        "color": "#FFFFFF", "align": "center", "letterSpacing": 0
-      }
-    }
-  },
-  {
     "id": "frame2",
     "name": "مشاركة في كامب جدور",
     "image": "assets/frames/frame2.png",

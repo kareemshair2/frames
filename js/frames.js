@@ -12,19 +12,6 @@ const FramesManager = (() => {
 
   const BUILT_IN_FRAMES = [
     {
-      id: 'frame1',
-      name: '\u0641\u0631\u064A\u0645 \u0634\u0643\u0631 \u0627\u0644\u0645\u062D\u0627\u0641\u0638\u0627\u062A',
-      image: 'assets/frames/frame1.png',
-      canvasWidth: 928,
-      canvasHeight: 1152,
-      photoArea: { x: 273, y: 290, width: 385, height: 573 },
-      text: {
-        name:    { x: 695, y: 920, fontSize: 42, fontWeight: 'bold',   color: '#014976', align: 'center', letterSpacing: 0 },
-        title:   { x: 239, y: 904, fontSize: 28, fontWeight: 'normal', color: '#012d4f', align: 'center', letterSpacing: 0 },
-        details: { x: 492, y: 126, fontSize: 24, fontWeight: 'bold',   color: '#FFFFFF', align: 'center', letterSpacing: 0 }
-      }
-    },
-    {
       id: 'frame2',
       name: '\u0645\u0634\u0627\u0631\u0643\u0629 \u0641\u064A \u0643\u0627\u0645\u0628 \u062C\u0630\u0648\u0631',
       image: 'assets/frames/frame2.png',
