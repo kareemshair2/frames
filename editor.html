@@ -116,51 +116,7 @@
             </h2>
           </div>
           <div class="sidebar__body">
-            <form class="text-form" id="textForm">
-              <div class="form-group">
-                <label class="form-label" for="inputName">الاسم</label>
-                <input class="form-input" type="text" id="inputName" placeholder="أدخل الاسم" maxlength="40">
-              </div>
-              <div class="form-group" data-text-field="title">
-                <label class="form-label" for="inputTitle">المسمى الوظيفي</label>
-                <input class="form-input" type="text" id="inputTitle" placeholder="أدخل المسمى" maxlength="50">
-              </div>
-              <div class="form-group" data-text-field="details">
-                <label class="form-label" for="inputDetails">كلمة الشكر</label>
-                <textarea class="form-input form-textarea" id="inputDetails" placeholder="أدخل كلمة الشكر" rows="3" maxlength="200"></textarea>
-              </div>
-              <div class="form-divider"></div>
-              <div class="form-section-title">حجم الخط</div>
-              <div class="form-group">
-                <label class="form-label" for="nameFontSize">اسم</label>
-                <div class="range-row">
-                  <input type="range" class="form-range" id="nameFontSize" min="14" max="80" value="42" aria-label="حجم خط الاسم">
-                  <span class="range-val" id="nameFontSizeVal">42px</span>
-                </div>
-              </div>
-              <div class="form-group" data-text-field="title">
-                <label class="form-label" for="titleFontSize">مسمى</label>
-                <div class="range-row">
-                  <input type="range" class="form-range" id="titleFontSize" min="12" max="60" value="28" aria-label="حجم خط المسمى">
-                  <span class="range-val" id="titleFontSizeVal">28px</span>
-                </div>
-              </div>
-              <div class="form-group" data-text-field="details">
-                <label class="form-label" for="detailsFontSize">شكر</label>
-                <div class="range-row">
-                  <input type="range" class="form-range" id="detailsFontSize" min="12" max="50" value="24" aria-label="حجم خط كلمة الشكر">
-                  <span class="range-val" id="detailsFontSizeVal">24px</span>
-                </div>
-              </div>
-              <div class="form-divider"></div>
-              <div class="form-section-title">لون النص</div>
-              <div class="form-group">
-                <div class="color-row" id="textColorOptions" role="group" aria-label="ألوان النص">
-                  <button type="button" class="color-dot active" data-color="#014976" style="background:#014976" aria-label="لون النص: أزرق" aria-pressed="true"></button>
-                  <button type="button" class="color-dot" data-color="#FFFFFF" style="background:#FFFFFF; border: 2px solid #ccc;" aria-label="لون النص: أبيض" aria-pressed="false"></button>
-                </div>
-              </div>
-            </form>
+            <form class="text-form" id="textForm" autocomplete="off"></form>
           </div>
         </div>
 

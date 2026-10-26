@@ -1,9 +1,14 @@
 /* ========================================
-   FRAME STUDIO — Editor Core (V2)
+   FRAME STUDIO — Editor Core (V3)
    Layer order:
-     [0] User Image
-     [1] Frame
-     [2+] Text
+      [0] User Image
+      [1] Frame
+      [2+] Text
+   Text fields are built DYNAMICALLY from
+   frameConfig.text. Each field may declare:
+      - value   : fixed text (no input shown)
+      - options : array -> rendered as <select>
+      - colors  : array -> restricted color picker
    ======================================== */
 
 'use strict';
@@ -12,22 +17,23 @@ const Editor = (() => {
   let canvas = null;
   let userImage = null;
   let frameImage = null;
-  let textObjects = { name: null, title: null, details: null };
+  let textObjects = {};        // key -> fabric.Text
+  let fieldState = {};         // key -> { text, fontSize, color }
   let currentStep = 1;
   let frameConfig = null;
 
   const el = {};
 
+  // Preferred render order for known field keys; unknown keys appended after.
+  const KEY_ORDER = ['name', 'title', 'details', 'role', 'track'];
+
   function cache() {
     [
       'editorCanvas','canvasContainer','canvasEmpty','canvasControls',
       'uploadZone','fileInput','uploadPreview','previewImg','removeImage',
-      'framesGrid','inputName','inputTitle','inputDetails',
+      'framesGrid','textForm',
       'btnNext','btnPrev','mobileNext','mobilePrev',
-      'zoomSlider','zoomValue','zoomIn','zoomOut','resetImage',
-      'nameFontSize','titleFontSize','detailsFontSize',
-      'nameFontSizeVal','titleFontSizeVal','detailsFontSizeVal',
-      'textColorOptions','alignOptions'
+      'zoomSlider','zoomValue','zoomIn','zoomOut','resetImage'
     ].forEach(id => { el[id] = document.getElementById(id); });
   }
 
@@ -202,7 +208,7 @@ const Editor = (() => {
       canvas.renderAll();
       fitCanvas();
       createTexts(frameConfig);
-      updateFormFieldVisibility(frameConfig);
+      buildForm(frameConfig);
 
       if (userImage) repositionImage();
     });
@@ -230,33 +236,51 @@ const Editor = (() => {
     Object.values(textObjects).forEach(t => { if (t) canvas.bringToFront(t); });
   }
 
-  /* ===== TEXT ===== */
+  /* ===== FIELD HELPERS ===== */
+  function orderedKeys(frame) {
+    const keys = Object.keys(frame.text || {});
+    return keys.sort((a, b) => {
+      const ia = KEY_ORDER.indexOf(a), ib = KEY_ORDER.indexOf(b);
+      return (ia === -1 ? 99 : ia) - (ib === -1 ? 99 : ib);
+    });
+  }
+
+  // Ensure a fieldState entry exists, seeded from config.
+  function ensureState(key, cfg) {
+    if (!fieldState[key]) {
+      const fixed = typeof cfg.value === 'string';
+      let initialText = fixed ? cfg.value : '';
+      if (!fixed && Array.isArray(cfg.options) && cfg.options.length) initialText = cfg.options[0];
+      fieldState[key] = {
+        text: initialText,
+        fontSize: cfg.fontSize || 42,
+        color: cfg.color || '#FFFFFF'
+      };
+    }
+    return fieldState[key];
+  }
+
+  /* ===== TEXT OBJECTS ===== */
   function createTexts(frame) {
     Object.keys(textObjects).forEach(k => {
       if (textObjects[k]) { canvas.remove(textObjects[k]); textObjects[k] = null; }
     });
-    if (!frame || !frame.text) return;
+    textObjects = {};
+    if (!frame || !frame.text) { canvas.renderAll(); return; }
 
-    const defs = {
-      name:    { size: 42, weight: 'bold',   color: '#014976' },
-      title:   { size: 28, weight: 'normal', color: '#012d4f' },
-      details: { size: 24, weight: 'bold',   color: '#FFFFFF' }
-    };
-
-    Object.keys(frame.text).forEach(key => {
+    orderedKeys(frame).forEach(key => {
       const cfg = frame.text[key];
-      const d = defs[key] || {};
-      const inp = el[key === 'name' ? 'inputName' : key === 'title' ? 'inputTitle' : 'inputDetails'];
-      const val = (inp && inp.value) ? inp.value : '';
+      const st = ensureState(key, cfg);
+      const fixed = typeof cfg.value === 'string';
 
-      const t = new fabric.Text(val, {
+      const t = new fabric.Text(st.text, {
         id: key,
         left: cfg.x,
         top: cfg.y,
-        fontSize: cfg.fontSize || d.size,
+        fontSize: st.fontSize,
         fontFamily: 'Cairo, Tajawal, sans-serif',
-        fontWeight: cfg.fontWeight || d.weight,
-        fill: cfg.color || d.color,
+        fontWeight: cfg.fontWeight || 'normal',
+        fill: st.color,
         textAlign: cfg.align || 'center',
         originX: 'center', originY: 'center',
         selectable: true, evented: true,
@@ -273,59 +297,157 @@ const Editor = (() => {
       canvas.bringToFront(t);
     });
     canvas.renderAll();
-    syncSliders();
   }
 
   function updateText(key, val) {
     if (textObjects[key]) { textObjects[key].set('text', val || ''); canvas.renderAll(); }
   }
 
-  function updateFormFieldVisibility(cfg) {
-    const has = cfg && cfg.text ? cfg.text : {};
-    document.querySelectorAll('[data-text-field]').forEach(group => {
-      const field = group.dataset.textField;
-      group.style.display = has[field] ? '' : 'none';
-    });
-  }
+  /* ===== DYNAMIC FORM ===== */
+  function buildForm(frame) {
+    if (!el.textForm) return;
+    el.textForm.innerHTML = '';
+    if (!frame || !frame.text) return;
 
-  function syncSliders() {
-    if (!frameConfig || !frameConfig.text) return;
-    const c = frameConfig.text;
-    if (c.name && el.nameFontSize) { el.nameFontSize.value = c.name.fontSize; el.nameFontSizeVal.textContent = c.name.fontSize + 'px'; }
-    if (c.title && el.titleFontSize) { el.titleFontSize.value = c.title.fontSize; el.titleFontSizeVal.textContent = c.title.fontSize + 'px'; }
-    if (c.details && el.detailsFontSize) { el.detailsFontSize.value = c.details.fontSize; el.detailsFontSizeVal.textContent = c.details.fontSize + 'px'; }
-  }
+    orderedKeys(frame).forEach(key => {
+      const cfg = frame.text[key];
+      const st = ensureState(key, cfg);
+      const fixed = typeof cfg.value === 'string';
+      const label = cfg.label || key;
+      const group = document.createElement('div');
+      group.className = 'form-group';
 
-  function initTextInputs() {
-    el.inputName.addEventListener('input', () => updateText('name', el.inputName.value));
-    el.inputTitle.addEventListener('input', () => updateText('title', el.inputTitle.value));
-    el.inputDetails.addEventListener('input', () => updateText('details', el.inputDetails.value));
+      // --- Fixed text: show read-only preview, no input ---
+      if (fixed) {
+        const lab = document.createElement('label');
+        lab.className = 'form-label';
+        lab.textContent = label;
+        const box = document.createElement('div');
+        box.className = 'form-static';
+        box.textContent = cfg.value;
+        group.appendChild(lab);
+        group.appendChild(box);
+        el.textForm.appendChild(group);
+        return; // no further controls for fixed fields
+      }
 
-    el.nameFontSize.addEventListener('input', () => {
-      const v = +el.nameFontSize.value; el.nameFontSizeVal.textContent = v + 'px';
-      if (textObjects.name) { textObjects.name.set('fontSize', v); canvas.renderAll(); }
-    });
-    el.titleFontSize.addEventListener('input', () => {
-      const v = +el.titleFontSize.value; el.titleFontSizeVal.textContent = v + 'px';
-      if (textObjects.title) { textObjects.title.set('fontSize', v); canvas.renderAll(); }
-    });
-    el.detailsFontSize.addEventListener('input', () => {
-      const v = +el.detailsFontSize.value; el.detailsFontSizeVal.textContent = v + 'px';
-      if (textObjects.details) { textObjects.details.set('fontSize', v); canvas.renderAll(); }
-    });
+      // --- Label ---
+      const lab = document.createElement('label');
+      lab.className = 'form-label';
+      lab.textContent = label;
+      group.appendChild(lab);
 
-    el.textColorOptions.querySelectorAll('.color-dot').forEach(btn => {
-      btn.addEventListener('click', () => {
-        el.textColorOptions.querySelectorAll('.color-dot').forEach(b => {
-          b.classList.remove('active');
-          b.setAttribute('aria-pressed', 'false');
+      // --- Control: select (options) or text input ---
+      const inputId = 'input-' + key;
+      if (Array.isArray(cfg.options) && cfg.options.length) {
+        const sel = document.createElement('select');
+        sel.className = 'form-input form-select';
+        sel.id = inputId;
+        cfg.options.forEach(opt => {
+          const o = document.createElement('option');
+          o.value = opt; o.textContent = opt;
+          sel.appendChild(o);
         });
-        btn.classList.add('active');
-        btn.setAttribute('aria-pressed', 'true');
-        Object.values(textObjects).forEach(t => { if (t) t.set('fill', btn.dataset.color); });
-        canvas.renderAll();
+        sel.value = st.text;
+        sel.addEventListener('change', () => { st.text = sel.value; updateText(key, sel.value); });
+        group.appendChild(sel);
+      } else {
+        const inp = document.createElement('input');
+        inp.className = 'form-input';
+        inp.type = 'text';
+        inp.id = inputId;
+        inp.placeholder = cfg.placeholder || ('أدخل ' + label);
+        inp.maxLength = cfg.maxLength || 40;
+        inp.value = st.text;
+        inp.addEventListener('input', () => { st.text = inp.value; updateText(key, inp.value); });
+        group.appendChild(inp);
+      }
+      el.textForm.appendChild(group);
+
+      // --- Font size slider ---
+      const sGroup = document.createElement('div');
+      sGroup.className = 'form-group';
+      const sLab = document.createElement('label');
+      sLab.className = 'form-label';
+      sLab.setAttribute('for', inputId + '-size');
+      sLab.textContent = 'حجم خط ' + label;
+      const sRow = document.createElement('div');
+      sRow.className = 'range-row';
+      const range = document.createElement('input');
+      range.type = 'range'; range.className = 'form-range';
+      range.id = inputId + '-size';
+      range.min = 12; range.max = 90; range.value = st.fontSize;
+      const sVal = document.createElement('span');
+      sVal.className = 'range-val';
+      sVal.textContent = st.fontSize + 'px';
+      range.addEventListener('input', () => {
+        const v = +range.value;
+        st.fontSize = v;
+        sVal.textContent = v + 'px';
+        if (textObjects[key]) { textObjects[key].set('fontSize', v); canvas.renderAll(); }
       });
+      sRow.appendChild(range);
+      sRow.appendChild(sVal);
+      sGroup.appendChild(sLab);
+      sGroup.appendChild(sRow);
+      el.textForm.appendChild(sGroup);
+
+      // --- Divider between fields ---
+      const div = document.createElement('div');
+      div.className = 'form-divider';
+      el.textForm.appendChild(div);
     });
+
+    // --- Global text color: one control applies to ALL text objects ---
+    if (Array.isArray(frame.textColors) && frame.textColors.length) {
+      buildGlobalColorControl(frame);
+    }
+  }
+
+  function buildGlobalColorControl(frame) {
+    // Current shared color = fill of the first text object (all are synced).
+    const first = Object.values(textObjects).find(t => t);
+    const current = first ? first.fill : (frame.textColors[0]);
+
+    const cGroup = document.createElement('div');
+    cGroup.className = 'form-group';
+    const cLab = document.createElement('label');
+    cLab.className = 'form-label';
+    cLab.textContent = 'لون النصوص';
+    const cRow = document.createElement('div');
+    cRow.className = 'color-row';
+    cRow.setAttribute('role', 'group');
+    cRow.setAttribute('aria-label', 'لون النصوص');
+
+    frame.textColors.forEach(color => {
+      const dot = document.createElement('button');
+      dot.type = 'button';
+      dot.className = 'color-dot' + (color.toUpperCase() === String(current).toUpperCase() ? ' active' : '');
+      dot.dataset.color = color;
+      dot.style.background = color;
+      if (color.toUpperCase() === '#FFFFFF') dot.style.border = '2px solid #ccc';
+      dot.setAttribute('aria-label', 'لون النصوص: ' + color);
+      dot.setAttribute('aria-pressed', color.toUpperCase() === String(current).toUpperCase() ? 'true' : 'false');
+      dot.addEventListener('click', () => {
+        cRow.querySelectorAll('.color-dot').forEach(d => {
+          d.classList.remove('active'); d.setAttribute('aria-pressed', 'false');
+        });
+        dot.classList.add('active');
+        dot.setAttribute('aria-pressed', 'true');
+        setGlobalTextColor(color);
+      });
+      cRow.appendChild(dot);
+    });
+
+    cGroup.appendChild(cLab);
+    cGroup.appendChild(cRow);
+    el.textForm.appendChild(cGroup);
+  }
+
+  function setGlobalTextColor(color) {
+    Object.keys(fieldState).forEach(k => { fieldState[k].color = color; });
+    Object.values(textObjects).forEach(t => { if (t) t.set('fill', color); });
+    canvas.renderAll();
   }
 
   /* ===== ZOOM ===== */
@@ -373,7 +495,7 @@ const Editor = (() => {
 
   async function init() {
     cache(); initCanvas(); initUpload();
-    initTextInputs(); initZoom(); initNav();
+    initZoom(); initNav();
     await FramesManager.loadFrames();
     initFrameSelector();
 

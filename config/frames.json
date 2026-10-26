@@ -6,11 +6,48 @@
     "canvasWidth": 2048,
     "canvasHeight": 2048,
     "photoArea": { "x": 636, "y": 408, "width": 776, "height": 824 },
+    "textColors": ["#014976", "#FFFFFF"],
     "text": {
       "name": {
         "x": 1024, "y": 1280,
         "fontSize": 60, "fontWeight": "bold",
         "color": "#FFFFFF", "align": "center", "letterSpacing": 0
+      }
+    }
+  },
+  {
+    "id": "codemakers",
+    "name": "The Code Makers Journey",
+    "image": "assets/frames/codemakers.png",
+    "canvasWidth": 2500,
+    "canvasHeight": 2500,
+    "photoArea": { "x": 877, "y": 881, "width": 748, "height": 748 },
+    "textColors": ["#FFFFFF", "#FBAE42"],
+    "text": {
+      "name": {
+        "x": 1250, "y": 1873,
+        "fontSize": 72, "fontWeight": "bold",
+        "color": "#FFFFFF", "align": "center",
+        "label": "الاسم",
+        "placeholder": "أدخل اسمك"
+      },
+      "role": {
+        "x": 1250, "y": 2036,
+        "fontSize": 52, "fontWeight": "bold",
+        "color": "#FFFFFF", "align": "center",
+        "label": "العضوية",
+        "value": "Code Makers member"
+      },
+      "track": {
+        "x": 1250, "y": 2200,
+        "fontSize": 50, "fontWeight": "bold",
+        "color": "#FFFFFF", "align": "center",
+        "label": "التراك",
+        "options": [
+          "Data analysis-Season1",
+          "UI/UX-Season1",
+          "Backend-Season"
+        ]
       }
     }
   }
