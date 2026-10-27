@@ -1,21 +1,5 @@
 [
   {
-    "id": "frame2",
-    "name": "مشاركة في كامب جدور",
-    "image": "assets/frames/frame2.png",
-    "canvasWidth": 2048,
-    "canvasHeight": 2048,
-    "photoArea": { "x": 636, "y": 408, "width": 776, "height": 824 },
-    "textColors": ["#014976", "#FFFFFF"],
-    "text": {
-      "name": {
-        "x": 1024, "y": 1280,
-        "fontSize": 60, "fontWeight": "bold",
-        "color": "#FFFFFF", "align": "center", "letterSpacing": 0
-      }
-    }
-  },
-  {
     "id": "codemakers",
     "name": "The Code Makers Journey",
     "image": "assets/frames/codemakers.png",
