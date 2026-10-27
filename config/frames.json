@@ -17,7 +17,7 @@
       },
       "role": {
         "x": 1250, "y": 2036,
-        "fontSize": 52, "fontWeight": "bold",
+        "fontSize": 60, "fontWeight": "bold",
         "color": "#FFFFFF", "align": "center",
         "label": "العضوية",
         "value": "Code Makers member"
